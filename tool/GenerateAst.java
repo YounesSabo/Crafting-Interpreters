@@ -12,6 +12,7 @@ public class GenerateAst {
       System.err.println("Usage: generate_ast <output directory>");
       System.exit(64);
     }
+    // TODO CHANGE THIS TO ARGC[0] AND LEARN HOW TO RUN IN CMD WITH DESIRED PATH
     String outputDir = "C:\\Users\\saboy\\Documents\\Crafting Interpreter\\Chapters\\H4\\Scanner\\src\\com\\craftinginterpreters\\tool";
     // Description of each type and fields to generate the expressions 
     // We pass 'Expr' as an argument instead of hardcoding the name because 
