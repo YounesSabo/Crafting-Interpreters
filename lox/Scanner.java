@@ -15,7 +15,7 @@ class Scanner {
   // it is an empty arraylist that can hold elements of type Token
   private final List<Token> tokens = new ArrayList<>();
   
-  // Init variables to generate token data and token allocation
+  // Init variables to generate token data and token allocation from token class
   private int start = 0; // start index of a lexeme
   private int current = 0; // current char the scanner is on
   private int line = 1; // index of the current char 
