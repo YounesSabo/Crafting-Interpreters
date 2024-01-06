@@ -13,7 +13,7 @@ public class GenerateAst {
       System.exit(64);
     }
     // TODO CHANGE THIS TO ARGC[0] AND LEARN HOW TO RUN IN CMD WITH DESIRED PATH
-    String outputDir = "C:\\Users\\saboy\\Documents\\Crafting Interpreter\\Chapters\\H4\\Scanner\\src\\com\\craftinginterpreters\\tool";
+    String outputDir = "C:\\Users\\saboy\\Documents\\Crafting Interpreter\\Chapters\\H4\\Scanner\\src\\com\\craftinginterpreters\\lox";
     // Description of each type and fields to generate the expressions 
     // We pass 'Expr' as an argument instead of hardcoding the name because 
     // we’ll add a separate family of classes later for statements.
@@ -40,16 +40,41 @@ public class GenerateAst {
 	    writer.println("import java.util.List;");
 	    writer.println();
 	    writer.println("abstract class " + baseName + " {");
+	    
+	    // Init Visitor interface for the Visitor Pattern foir all the types
+	    defineVisitor(writer,baseName,types);
+	    
 	    // The AST classes.
 	    for (String type : types) {
 	      String className = type.split(":")[0].trim();
 	      String fields = type.split(":")[1].trim(); 
 	      defineType(writer, baseName, className, fields);
 	    }
+	    
+	    // The base accept() method >> IS ABSTRACT with typre R
+	    writer.println("	abstract <R> accept(Visitor<R> visitor);");
+	    
 	    writer.println("}");
 	    writer.close();
   }
   
+  /* DEFINING THE VISITOR INTERFACE */
+  private static void defineVisitor(PrintWriter writer, String baseName, List<String> types){
+	  
+	  // Interface named Visitor with a generic type parameter <R>. The generic 
+	  // type parameter <R> represents a placeholder for the type that will be 
+	  // specified when a class implements the Visitor interface.
+	  
+	  writer.println("	interface Visitor<R> {" );
+	  for(String type : types) {
+		  // trim() will delete all the whitespaces left after the split
+		  String typeName = type.split(":")[0].trim();
+		  writer.println("    R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
+	  }
+	  writer.println("	}");
+  }
+  
+  /* DEFYNING EACH SUBCLAS FOR EACH TYPE */
   private static void defineType(PrintWriter writer, String baseName,String className, String fieldList) {
 	    writer.println("  static class " + className + " extends " + baseName + " {");
 
@@ -64,7 +89,16 @@ public class GenerateAst {
 	    }
 
 	    writer.println("    }");
-
+	    
+	    // Vsitor Pattern implementing the accept()
+	    writer.println();
+	    // Stating that the following funciton wiull be overwritten for the current type
+	    writer.println("	@Override");
+	    // accept() is not abstract anymore but from type R defined by the specific Type
+	    writer.println("	<R> R accept(Visiutor<R> visitor) {");
+	    writer.println("	return visitor.visit" + className + baseName + "(this);");
+	    writer.println("	}");
+	    
 	    // Fields.
 	    writer.println();
 	    for (String field : fields) {
